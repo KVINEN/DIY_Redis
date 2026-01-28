@@ -86,12 +86,8 @@ int main() {
         if(strncmp(buffer, "PING", 4) == 0) {
             write(client_fd, "+PONG\r\n", 7);
         }
-
-        //only stop if user writes quit
-        if(strncmp(buffer, "quit", 4) == 0) {
-            close(client_fd); //close this spesific connection
-        }
-
+        
+        close(client_fd); //close this spesific connection
     }
 
     close(server_fd); //close socket
