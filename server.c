@@ -4,6 +4,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <arpa/inet.h>
+#include <string.h>
 
 int main() {
 
@@ -63,17 +64,34 @@ int main() {
 
         //init client socket
         int client_fd = accept(server_fd, (struct sockaddr *)&client_addr, &client_len);
-
+        
         //try and accept client
         if(client_fd < 0) {
             perror("Accept failed");
             continue; //keep trying for next client
         }
-
+        
         //print when successfully accepted
         printf("Connection accepted from a clinet!\n");
+        
+        char buffer[1024]; //define a buffer with limit of 1024 bytes
+        ssize_t bytes_received = read(client_fd, buffer, sizeof(buffer) - 1); //read into buffer
 
-        close(client_fd); //close this spesific connection
+        if(bytes_received > 0) {
+            buffer[bytes_received] = '\0'; //null terminator to determin end of string
+            printf("Client sent: %s\n", buffer);
+        }
+
+        //clasic redis PING PONG to test if connection works
+        if(strncmp(buffer, "PING", 4) == 0) {
+            write(client_fd, "+PONG\r\n", 7);
+        }
+
+        //only stop if user writes quit
+        if(strncmp(buffer, "quit", 4) == 0) {
+            close(client_fd); //close this spesific connection
+        }
+
     }
 
     close(server_fd); //close socket
