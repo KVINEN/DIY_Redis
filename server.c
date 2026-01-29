@@ -6,6 +6,14 @@
 #include <arpa/inet.h>
 #include <string.h>
 #include <fcntl.h>
+#include <poll.h>
+
+//define a max
+#define MAX_FDS 1000
+
+//create an array to hold sockets
+struct pollfd poll_fds[MAX_FDS];
+int nfds = 0;
 
 int main() {
     
@@ -60,51 +68,59 @@ int main() {
     struct sockaddr_in client_addr = {0};
     socklen_t client_len = sizeof(client_addr); //length of client address
 
+    //initiate variables
+    poll_fds[0].fd = server_fd; //fd -> file descriptor, integer id for file, socket or devices beeing monitored
+    poll_fds[0].events = POLLIN; //bitmask to define events the application wants to monitor
+    nfds = 1;
+
     //infinet loop to keep accepting clients
     while(1) {
 
-        //init client socket
-        int client_fd = accept(server_fd, (struct sockaddr *)&client_addr, &client_len);
-        
-        int flags = fcntl(client_fd, F_GETFL, 0);
-        fcntl(client_fd, F_SETFL, flags | O_NONBLOCK);
+        //wait forever until something happens
+        int timeout = -1;
+        int ready = poll(poll_fds, nfds, timeout);
 
-        //try and accept client
-        if(client_fd < 0) {
-            perror("Accept failed");
-            continue; //keep trying for next client
+        if (ready < 0) {
+            perror("poll failed");
+            break;
         }
 
-        printf("Connection accepted from a clinet!\n");
-        
-        //nested loop to keep readingn from client
-        while(1) {
+        //loop through all FDs to see which one is ready
+        for(int i = 0; i < nfds; i++) {
+            if(poll_fds[i].revents & POLLIN) {
+                if(poll_fds[i].fd == server_fd) {
+                    //handle new connections, accept 
+                    //init client socket
+                    int client_fd = accept(server_fd, (struct sockaddr *)&client_addr, &client_len);
+                    //try and accept client
+                    if(client_fd >= 0) {
+                        fcntl(client_fd, F_SETFL, O_NONBLOCK);
+                        poll_fds[nfds].fd = client_fd;
+                        poll_fds[nfds].events = POLLIN;
+                        nfds++;
+                        printf("New client connected on fd %d\n", client_fd);
+                    }
+                } else {
+                    //handle existing clients, read/write
+                    char buffer[1024]; //define a buffer with limit of 1024 bytes
+                    ssize_t n = read(poll_fds[i].fd, buffer, sizeof(buffer) - 1); //read into buffer
+                    if(n <= 0) {
+                        //client disconnected or error
+                        printf("Client on fd %d disconnected\n", poll_fds[i].fd);
+                        close(poll_fds[i].fd);
+                        poll_fds[i] = poll_fds[nfds -1];
+                        nfds--;
+                        i--;
+                    } else {
+                        buffer[n] = '\0';
+                        if(strncmp(buffer, "PING", 4) == 0) {
+                            write(poll_fds[i].fd, "+PONG\r\n", 7);
+                        }
+                    }
 
-            //print when successfully accepted
-            
-            char buffer[1024]; //define a buffer with limit of 1024 bytes
-            ssize_t bytes_received = read(client_fd, buffer, sizeof(buffer) - 1); //read into buffer
-            
-            //error or client disconnected
-            if(bytes_received <= 0) {
-                break;
-            }
-            
-            buffer[bytes_received] = '\0'; //null terminator to determin end of string
-            printf("Client sent: %s\n", buffer); //print client input
-            
-            //clasic redis PING PONG to test if connection works
-            if(strncmp(buffer, "PING", 4) == 0) {
-                write(client_fd, "+PONG\r\n", 7); //respond with PONG
-            }
-
-            if(strcmp(buffer, "q\n") == 0) {
-                break;
+                }
             }
         }
-        
-        printf("Client disconnected, waiting for new connection...");
-        close(client_fd); //close this spesific connection
     }
 
     close(server_fd); //close socket
