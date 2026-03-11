@@ -62,7 +62,24 @@ PING
 # Expected response: +PONG
 ```
 
-## 📝License
+## 🗺️ 2026 Challange Roadmap
+
+```
+Jan - Redis clone in C
+Feb - HTTP load balancer in Go/Golang
+Mar - CHIP-8 Emulator in C++
+Apr - Real-Time withboard in TypeScript
+May - Search Engine in Java
+Jun - Code Runner in Python
+Jul - LSM Tree storage in Rust
+Aug - Task Scheduler in C#(.NET)
+Sep - AI search in Python
+Oct - Password manager in Rust
+Nov- Blockchain in JavaScript
+Dec - ????? in ????? <- TBD
+```
+
+## 📝 License
 This project is licensed under the MIT License.
 
 
