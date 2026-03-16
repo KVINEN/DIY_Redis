@@ -2,13 +2,13 @@
 
 A lightweight, event-driven redis prototype built from scratch in C as part of my "1 New Project Every Month of 2026" challange.
 
-## 📅 The 2026 Challange
+## The 2026 Challange
 
 This project is Part 1 of 12 in my year-long journey to build different projects in 2026. The focus is on creating functional prototypes or MVPs (Minimum Viable Products) rather than 100% feature-complete applications. If future months allow, I may return to earlier projects to add more advanced features.
 
 _Note: Since this first project was started late in January, this version serves as a core networking prototype._
 
-## 🚀 Overview
+## Overview
 
 DIY_Redis is a minimal implementation of a key-value store server. It uses a single-threaded event loop with non-blocking I/O to handle multiple concurrent client connections efficently.
 
@@ -21,12 +21,12 @@ DIY_Redis is a minimal implementation of a key-value store server. It uses a sin
   * ```commands.c```: Placeholder for the command parsing logic.
 * **RESP-ish Communication:** Currently supports a classic "PING" command, responding with "+PONG\r\n" to verify connection health.
 
-## 🛠️ Technical Details
+## Technical Details
 * **Port:** 6380 (Adjusted from default 6379 to avoid conflicts during development).
 * **Max Connections:** Supports up tp 1000 simultaneous file descriptors.
 * **Socket Options:** Implements ```SO_REUSEADDR``` to allow immediate server restarts without "Address already in use" errors.
 
-## 🏗️ Project Structure
+## Project Structure
 ```
 .
 ├── server.h      # Core data structures & function prototypes
@@ -36,7 +36,7 @@ DIY_Redis is a minimal implementation of a key-value store server. It uses a sin
 └── README.md     # Project documentation
 ```
 
-## 🚦 Getting started
+## Getting started
 
 ### prerequisites
 * A C compiler (e.g., ```gcc```)
@@ -62,7 +62,7 @@ PING
 # Expected response: +PONG
 ```
 
-## 🗺️ 2026 Challange Roadmap
+## 2026 Challange Roadmap
 
 ```
 Jan - Redis clone in C
@@ -79,7 +79,7 @@ Nov- Blockchain in JavaScript
 Dec - ????? in ????? <- TBD
 ```
 
-## 📝 License
+## License
 This project is licensed under the MIT License.
 
 
