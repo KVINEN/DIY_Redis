@@ -1,12 +1,6 @@
 # DIY_Redis
 
-A lightweight, event-driven redis prototype built from scratch in C as part of my "1 New Project Every Month of 2026" challange.
-
-## The 2026 Challange
-
-This project is Part 1 of 12 in my year-long journey to build different projects in 2026. The focus is on creating functional prototypes or MVPs (Minimum Viable Products) rather than 100% feature-complete applications. If future months allow, I may return to earlier projects to add more advanced features.
-
-_Note: Since this first project was started late in January, this version serves as a core networking prototype._
+A lightweight, event-driven redis prototype built from scratch in C
 
 ## Overview
 
@@ -62,22 +56,6 @@ PING
 # Expected response: +PONG
 ```
 
-## 2026 Challange Roadmap
-
-```
-Jan - Redis clone in C
-Feb - HTTP load balancer in Go/Golang
-Mar - CHIP-8 Emulator in C++
-Apr - Real-Time withboard in TypeScript
-May - Search Engine in Java
-Jun - Code Runner in Python
-Jul - LSM Tree storage in Rust
-Aug - Task Scheduler in C#(.NET)
-Sep - AI search in Python
-Oct - Password manager in Rust
-Nov- Blockchain in JavaScript
-Dec - ????? in ????? <- TBD
-```
 
 ## License
 This project is licensed under the MIT License.
